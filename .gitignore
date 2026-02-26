@@ -1,0 +1,17 @@
+# Data and Datasets
+data/
+datasets/
+
+# AI Models and training runs
+runs/
+*.pt
+*.onnx
+*.engine
+
+# Python environment and cache
+__pycache__/
+venv/
+.env
+
+# System files
+.DS_Store
