@@ -1,5 +1,5 @@
 # ============================================================
-# Quanser QLabs – Cityscape + QDrone2 Setup Script
+# Quanser QLabs – Plane + QDrone2 Setup Script
 # ============================================================
 
 # region: imports
@@ -8,8 +8,6 @@ import sys
 import time
 import subprocess
 import numpy as np
-import random
-
 
 from qvl.qlabs import QuanserInteractiveLabs
 from qvl.free_camera import QLabsFreeCamera
@@ -21,7 +19,7 @@ import pal.resources.rtmodels as rtmodels
 
 
 # ------------------------------------------------------------
-# Path to QLabs executable (adjust ONLY if installed elsewhere)
+# Path to QLabs executable
 # ------------------------------------------------------------
 QLABS_EXE = r"C:\Program Files\Quanser\Quanser Interactive Labs\Quanser Interactive Labs.exe"
 
@@ -36,11 +34,12 @@ def connect_or_launch_qlabs():
     if qlabs.open("localhost"):
         print("Connected to existing QLabs instance")
         return qlabs
-    print("No running QLabs detected. Launching QLabs with Cityscape...")
+
+    print("No running QLabs detected. Launching QLabs with Plane...")
     subprocess.Popen([
         QLABS_EXE,
         "-loadmodule",
-        "Cityscape"
+        "Plane"
     ])
 
     # Allow QLabs to fully initialize
@@ -56,19 +55,18 @@ def connect_or_launch_qlabs():
 
 
 def setup(
-        initialPosition=[0.6, 0, 0],
-        initialOrientation=[0, 0, 0],
-    ):
-
+    initialPosition=[0, 0, 0],
+    initialOrientation=[0, 0, 0],
+):
     os.system("cls")
 
     # --------------------------------------------------------
-    # Connect or launch QLabs (NO duplicate windows)
+    # Connect or launch QLabs
     # --------------------------------------------------------
     qlabs = connect_or_launch_qlabs()
 
     # --------------------------------------------------------
-    # Clean previous actors and models (keep Cityscape)
+    # Clean previous actors and models
     # --------------------------------------------------------
     qlabs.destroy_all_spawned_actors()
     QLabsRealTime().terminate_all_real_time_models()
@@ -88,64 +86,73 @@ def setup(
         scale=[1, 1, 1],
         configuration=0
     )
-    x = hQDrone.ping()
-    print(x)
-    # -------------------------------------------------------
-    # Spawn Person
-    # -------------------------------------------------------
-    #for people with full animated use the configuration 6-11
-    print("Spawning person...")
-    NUMPEOPLE = 5
-    hpeople = []  
-    for i in range(NUMPEOPLE):
 
-        # Initialize cone
+    hQDrone.possess(hQDrone.VIEWPOINT_TRAILING)
+
+    x = hQDrone.ping()
+    print("Ping response:", x)
+
+    # -------------------------------------------------------
+    # Spawn People
+    # -------------------------------------------------------
+    print("Spawning people...")
+    NUMPEOPLE = 5
+    hpeople = []
+
+    for i in range(NUMPEOPLE):
         hpeople.append(QLabsPerson(qlabs))
 
-    hpeople[0].spawn(location =[-2.269, 1.616, 1],
-                    rotation=[0,0,np.pi/2], scale = [1,1,1],
-                    configuration = 6)
-
-    hpeople[1].spawn(location =[-3.4, 14.95, 1],
-                rotation=[0,0,0], scale = [1,1,1],
-                configuration = 7)
-
-    hpeople[2].spawn(location =[5.08, 0.378, 1],
-            rotation=[0,0,3*np.pi/2], scale = [1,1,1],
-            configuration = 8)
-
-    hpeople[3].spawn(location =[-8.341, 6.133, 1],
-            rotation=[0,0,np.pi], scale = [1,1,1],
-            configuration = 9)
-    
-    
-    
-    
-    
-    hpeople[0].move_to(location=[-0.597, -7.389, 1], speed=hpeople[0].WALK, waitForConfirmation=True)
-    hpeople[1].move_to(location=[9.09, 13.967, 1], speed= hpeople[1].WALK, waitForConfirmation=True)
-    hpeople[2].move_to(location=[6.351, -5.006, 1], speed=hpeople[2].WALK, waitForConfirmation=True)
-    hpeople[3].move_to(location=[-12.591, -1.731, 1], speed=hpeople[3].WALK, waitForConfirmation=True)
-
-    
-    # --------------------------------------------------------
-    # Drone Flight
-    # --------------------------------------------------------
-
-    
-    time.sleep(1)
-    # --------------------------------------------------------
-    # Start QDrone2 real-time model
-    # --------------------------------------------------------
-    print("Starting real-time model...")
-    QLabsRealTime().start_real_time_model(
-        modelName=rtmodels.QDRONE2,
-        actorNumber=0
+    hpeople[0].spawn(
+        location=[-2.269, 1.616, 1],
+        rotation=[0, 0, np.pi / 2],
+        scale=[1, 1, 1],
+        configuration=6
     )
-    
-    # endregion
 
-    
+    hpeople[1].spawn(
+        location=[-3.4, 14.95, 1],
+        rotation=[0, 0, 0],
+        scale=[1, 1, 1],
+        configuration=7
+    )
+
+    hpeople[2].spawn(
+        location=[5.08, 0.378, 1],
+        rotation=[0, 0, 3 * np.pi / 2],
+        scale=[1, 1, 1],
+        configuration=8
+    )
+
+    hpeople[3].spawn(
+        location=[-8.341, 6.133, 1],
+        rotation=[0, 0, np.pi],
+        scale=[1, 1, 1],
+        configuration=9
+    )
+
+    hpeople[0].move_to(
+        location=[-0.597, -7.389, 1],
+        speed=hpeople[0].WALK,
+        waitForConfirmation=True
+    )
+
+    hpeople[1].move_to(
+        location=[9.09, 13.967, 1],
+        speed=hpeople[1].WALK,
+        waitForConfirmation=True
+    )
+
+    hpeople[2].move_to(
+        location=[6.351, -5.006, 1],
+        speed=hpeople[2].WALK,
+        waitForConfirmation=True
+    )
+
+    hpeople[3].move_to(
+        location=[-12.591, -1.731, 1],
+        speed=hpeople[3].WALK,
+        waitForConfirmation=True
+    )
 
     # --------------------------------------------------------
     # Spawn Free Camera
@@ -157,8 +164,21 @@ def setup(
         [0, 0.748, 0.792]
     )
 
-    print("Cityscape + QDrone2 scene updated (same QLabs instance).")
+    print("Plane + QDrone2 scene updated.")
 
+    # --------------------------------------------------------
+    # Start RT model and print path
+    # --------------------------------------------------------
+    rtmodel_path = rtmodels.QDRONE2
+    print("RT model path:", rtmodel_path)
+
+    QLabsRealTime().start_real_time_model(
+        modelName=rtmodel_path,
+        actorNumber=0
+    )
+
+    print("RT model started.")
+    
 
 # ------------------------------------------------------------
 # Entry point
