@@ -1,0 +1,7 @@
+numpy
+opencv-python
+pyserial
+pyrealsense2
+torch
+torchvision
+ultralytics
