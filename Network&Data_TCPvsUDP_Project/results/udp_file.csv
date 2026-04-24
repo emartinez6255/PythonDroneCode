@@ -1,0 +1,6 @@
+udp_file,test_1mb.dat,1048576,0.059907,17093.13
+udp_file,test_5mb.dat,5242880,0.308957,16571.89
+udp_file,test_100kb.dat,102400,0.008671,11533.36
+udp_file,test_100kb.dat,102400,0.016214,6167.36
+udp_file,test_1mb.dat,1048576,0.129803,7888.87
+udp_file,test_5mb.dat,5242880,0.277084,18478.16
